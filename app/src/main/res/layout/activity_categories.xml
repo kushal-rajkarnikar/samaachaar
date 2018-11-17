@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    tools:context=".CategoriesActivity">
+
+    <TextView
+        android:id="@+id/Politics"
+        android:layout_width="match_parent"
+        android:text="Politics"
+        android:layout_height="0dp"
+        android:layout_weight="1"/>
+
+    <TextView
+        android:id="@+id/Business"
+        android:layout_width="match_parent"
+        android:text="Business"
+        android:layout_height="0dp"
+        android:layout_weight="1"/>
+
+
+    <TextView
+        android:id="@+id/Sports"
+        android:layout_width="match_parent"
+        android:text="Sports"
+        android:layout_height="0dp"
+        android:layout_weight="1"/>
+
+    <TextView
+        android:id="@+id/Entertainment"
+        android:layout_width="match_parent"
+        android:text="Entertainment"
+        android:layout_height="0dp"
+        android:layout_weight="1"/>
+
+    <TextView
+        android:id="@+id/Art"
+        android:layout_width="match_parent"
+        android:text="Art and Design"
+        android:layout_height="0dp"
+        android:layout_weight="1"/>
+    <TextView
+        android:id="@+id/Other"
+        android:layout_width="match_parent"
+        android:text="Other"
+        android:layout_height="0dp"
+        android:layout_weight="1"/>
+
+
+
+</LinearLayout>
