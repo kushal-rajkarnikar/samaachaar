@@ -220,12 +220,15 @@ public class QueryUtils {
         String jsonResponse = null;
         try {
             jsonResponse = makeHttpRequest(url);
+
         } catch (IOException e) {
             Log.e(LOG_TAG, "Problem making the HTTP request.", e);
         }
 
         // Extract relevant fields from the JSON response and create a list of {@link Article}s
         List<Article> articles = extractResponseFromJson(jsonResponse);
+
+        Log.i(LOG_TAG, "json: " + jsonResponse);
 
         // Return the list of {@link Articles}s
         return articles;

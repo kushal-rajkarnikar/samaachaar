@@ -1,6 +1,7 @@
 package com.example.android.newsapp;
 
 import android.app.LoaderManager;
+import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.Loader;
@@ -12,6 +13,7 @@ import android.preference.PreferenceManager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -19,8 +21,11 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.content.Context;
+import android.view.Gravity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,7 +35,7 @@ public class NewsActivity extends AppCompatActivity implements LoaderManager.Loa
     public static final String LOG_TAG = NewsActivity.class.getName();
     // URL for article data from the Guardian News API
     private static final String GUARDIAN_API_URL = "https://content.guardianapis.com/search?";
-    private static final String API_TEST_KEY = "test";
+    private static final String API_TEST_KEY = "ca0f7726-275e-4609-bb9e-0f31ff819dd6";
     // Adapter for the list of articles
     private ArticleAdapter mAdapter;
     // Constant value for the book loader ID.
@@ -43,17 +48,23 @@ public class NewsActivity extends AppCompatActivity implements LoaderManager.Loa
     ConnectivityManager cm;
     NetworkInfo activeNetwork;
     private SwipeRefreshLayout mSwipeRefresh;
+//    Uri baseUri = Uri.parse(GUARDIAN_API_URL);
+//    Uri.Builder uriBuilder = baseUri.buildUpon();
+    String mselectCategory = "";
+    String query = "none";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_news);
 
+        String selectCategory = "world";
+
         // Find a reference to the {@link ListView} in the layout
         ListView articleListView = (ListView) findViewById(R.id.list);
 
         // Create a new adapter that takes an empty list of articles as input
-        mAdapter = new ArticleAdapter(this, articleArrayList);
+        mAdapter = new ArticleAdapter(this, articleArrayList, selectCategory);
 
         // Set the adapter on the {@link ListView}
         // so the list can be populated in the user interface
@@ -92,7 +103,7 @@ public class NewsActivity extends AppCompatActivity implements LoaderManager.Loa
                                            int position, long id) {
                 // TODO Auto-generated method stub
 
-                Toast.makeText(NewsActivity.this, "Saved", Toast.LENGTH_LONG).show();
+                Toast.makeText(NewsActivity.this, "News Saved in Favourites.", Toast.LENGTH_LONG).show();
                 return true;
             }
 
@@ -140,9 +151,31 @@ public class NewsActivity extends AppCompatActivity implements LoaderManager.Loa
     }
 
     @Override
+    protected void onResume()
+    {
+        super.onResume();
+        loaderManager.restartLoader(ARTICLE_LOADER_ID, null, NewsActivity.this);
+    }
+
+    @Override
     public Loader<List<Article>> onCreateLoader(int id, Bundle args) {
         // Create a new loader for the given URL
         Log.i(LOG_TAG, "Loader on create");
+
+        Bundle extras = getIntent().getExtras();
+        String selectCategory = "";
+        if (extras != null) {
+            selectCategory = extras.getString("selectCategry");
+        }
+        else {
+            selectCategory = "world";
+        }
+
+        mselectCategory = selectCategory;
+
+//        Toast toast = Toast.makeText(NewsActivity.this, selectCategory, Toast.LENGTH_SHORT);
+//        toast.setGravity(Gravity.CENTER, 0, 0);
+//        toast.show();
 
         SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         String orderBy = sharedPrefs.getString(
@@ -156,13 +189,27 @@ public class NewsActivity extends AppCompatActivity implements LoaderManager.Loa
         Uri baseUri = Uri.parse(GUARDIAN_API_URL);
         Uri.Builder uriBuilder = baseUri.buildUpon();
 
-        uriBuilder.appendQueryParameter("q", "artanddesign");
+        //https://content.guardianapis.com/search?tag=politics/politics&api-key=test
+
+//        uriBuilder.appendQueryParameter("q", selectCategory);
+        if (extras != null && extras.containsKey("query")){
+            query = extras.getString("query");
+        }
+        if (query.equals("none")) {
+            uriBuilder.appendQueryParameter("section", selectCategory);
+
+        }
+        else {
+            uriBuilder.appendQueryParameter("q", query);
+            NewsActivity.this.setTitle(query);
+        }
         uriBuilder.appendQueryParameter("format", "json");
         uriBuilder.appendQueryParameter("show-fields", "all");
         uriBuilder.appendQueryParameter("order-by", orderBy);
         uriBuilder.appendQueryParameter("page-size", noOfArticles);
         uriBuilder.appendQueryParameter("api-key", API_TEST_KEY);
         Log.v(LOG_TAG, uriBuilder.toString());
+//        Toast.makeText(NewsActivity.this, uriBuilder.toString(), Toast.LENGTH_LONG).show();
 
         return new ArticleLoader(this, uriBuilder.toString());
     }
@@ -204,6 +251,32 @@ public class NewsActivity extends AppCompatActivity implements LoaderManager.Loa
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
+        // Add SearchWidget.
+        SearchManager searchManager = (SearchManager) getSystemService( Context.SEARCH_SERVICE );
+        SearchView searchView = (SearchView) menu.findItem( R.id.search ).getActionView();
+
+        searchView.setSearchableInfo( searchManager.getSearchableInfo( getComponentName() ) );
+
+//
+
+
+        SearchView.OnQueryTextListener queryTextListener = new SearchView.OnQueryTextListener() {
+            public boolean onQueryTextChange(String newText) {
+                // this is your adapter that will be filtered
+                return true;
+            }
+
+            public boolean onQueryTextSubmit(String query) {
+                //Here u can get the value "query" which is entered in the search box.
+//                Toast.makeText(NewsActivity.this, query, Toast.LENGTH_LONG).show();
+                Intent i= new Intent(NewsActivity.this,NewsActivity.class);
+                i.putExtra("query",query);
+                startActivity(i);
+                return true;
+            }
+        };
+        searchView.setOnQueryTextListener(queryTextListener);
+
         return true;
     }
 
@@ -212,7 +285,11 @@ public class NewsActivity extends AppCompatActivity implements LoaderManager.Loa
         switch (item.getItemId()) {
 
             // Check if user triggered a refresh:
-            
+
+//            case R.id.search:
+//                Intent searchIntent = new Intent(this, SearchActivity.class);
+//                startActivity(searchIntent);
+
             case R.id.menu_categories:
                 Intent categoriesIntent = new Intent(this, CategoriesActivity.class);
                 startActivity(categoriesIntent);
@@ -224,7 +301,7 @@ public class NewsActivity extends AppCompatActivity implements LoaderManager.Loa
             case R.id.action_settings:
                 Intent settingsIntent = new Intent(this, SettingsActivity.class);
                 startActivity(settingsIntent);
-                return true; 
+                return true;
         }
 
         return super.onOptionsItemSelected(item);

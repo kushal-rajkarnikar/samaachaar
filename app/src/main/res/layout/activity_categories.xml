@@ -6,47 +6,64 @@
     android:orientation="vertical"
     tools:context=".CategoriesActivity">
 
-    <TextView
+    <Button
+        android:id="@+id/All"
+        android:layout_width="match_parent"
+        android:text="All"
+        android:layout_height="0dp"
+        android:layout_weight="1"/>
+
+    <Button
         android:id="@+id/Politics"
         android:layout_width="match_parent"
         android:text="Politics"
         android:layout_height="0dp"
         android:layout_weight="1"/>
 
-    <TextView
-        android:id="@+id/Business"
-        android:layout_width="match_parent"
-        android:text="Business"
-        android:layout_height="0dp"
-        android:layout_weight="1"/>
+    <Button
+    android:id="@+id/Business"
+    android:layout_width="match_parent"
+    android:text="Business"
+    android:layout_height="0dp"
+    android:layout_weight="1"/>
 
-
-    <TextView
+    <Button
         android:id="@+id/Sports"
         android:layout_width="match_parent"
         android:text="Sports"
         android:layout_height="0dp"
         android:layout_weight="1"/>
 
-    <TextView
-        android:id="@+id/Entertainment"
+
+    <Button
+        android:id="@+id/Environment"
         android:layout_width="match_parent"
-        android:text="Entertainment"
+        android:text="Environment"
         android:layout_height="0dp"
         android:layout_weight="1"/>
 
-    <TextView
-        android:id="@+id/Art"
+    <Button
+        android:id="@+id/Technology"
         android:layout_width="match_parent"
-        android:text="Art and Design"
+        android:text="Technology"
         android:layout_height="0dp"
         android:layout_weight="1"/>
-    <TextView
-        android:id="@+id/Other"
+
+    <Button
+        android:id="@+id/Music"
         android:layout_width="match_parent"
-        android:text="Other"
+        android:text="Music"
         android:layout_height="0dp"
         android:layout_weight="1"/>
+
+    <Button
+        android:id="@+id/Science"
+        android:layout_width="match_parent"
+        android:text="Science"
+        android:layout_height="0dp"
+        android:layout_weight="1"/>
+
+
 
 
 

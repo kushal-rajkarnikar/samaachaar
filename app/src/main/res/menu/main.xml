@@ -2,7 +2,16 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="com.example.android.newsapp.NewsActivity">
+    tools:context="com.example.android.newsapp.NewsActivity"
+    >
+
+
+    <item
+        android:id="@+id/search"
+        android:icon="@drawable/ic_baseline_search_24px"
+        app:actionViewClass="android.widget.SearchView"
+        android:title="@string/menu_categories"
+        app:showAsAction="ifRoom" />
 
     <item
         android:id="@+id/menu_categories"
